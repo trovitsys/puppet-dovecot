@@ -20,11 +20,14 @@ class dovecot (
     $auth_mechanisms            = 'plain',
     $auth_include               = [ 'system' ],
     # 10-logging.conf
+    $syslog_facility            = undef,
     $log_path                   = undef,
     $log_timestamp              = undef,
     $auth_verbose               = undef,
+    $auth_verbose_passwords     = undef,
     $auth_debug                 = undef,
     $mail_debug                 = undef,
+    $auth_debug_passwords       = undef,
     # 10-mail.conf
     $mail_home                  = undef,
     $mail_fsync                 = undef,
@@ -139,10 +142,10 @@ class dovecot (
     }
 
     case $::operatingsystem {
-    'RedHat', 'CentOS': { 
+    'RedHat', 'CentOS': {
         $directory = '/etc/dovecot'
         $prefix    = 'dovecot'
-    } 
+    }
     /^(Debian|Ubuntu)$/:{
         $directory = '/etc/dovecot'
         $prefix    = 'dovecot'
@@ -225,13 +228,13 @@ class dovecot (
     file { "${directory}/conf.d/20-pop3.conf":
         content => template('dovecot/conf.d/20-pop3.conf.erb'),
     }
-    
+
     if $manage_sieve {
       file { "${directory}/conf.d/20-managesieve.conf":
           content => template('dovecot/conf.d/20-managesieve.conf.erb'),
       }
     }
-    
+
     file { "${directory}/conf.d/90-sieve.conf":
         content => template('dovecot/conf.d/90-sieve.conf.erb'),
     }
